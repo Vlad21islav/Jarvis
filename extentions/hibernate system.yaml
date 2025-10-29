@@ -1,0 +1,17 @@
+actions:
+- sp/run timeout /t 7200 & shutdown /h
+voice:
+  sounds:
+  - Turning off the power
+  - Request completed sir
+phrases:
+- выключи компьютер
+- выключи ноутбук
+- переведи компьютер в режим гибернации
+- переведи ноутбук в режим гибернации
+
+- turn off the computer
+- turn off the laptop
+- turn of pc
+- turn of the pc
+- turn the pc off
