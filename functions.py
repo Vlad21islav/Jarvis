@@ -7,7 +7,7 @@ from google import genai
 import wave
 from piper import PiperVoice
 
-voice = PiperVoice.load("text-to-speech-models\en-jarvis-medium\jarvis-medium.onnx")
+voice = PiperVoice.load("piper-models\en-jarvis-medium\jarvis-medium.onnx")
 
 def load_yaml_file(file_path: str) -> dict:
     """Загружает содержимое yaml файла и возвращает его как словарь."""
@@ -35,12 +35,13 @@ def command(text: str) -> bool:
                 except IndexError:
                     pass
                 for action in data.get("actions", []): # Выполняем действия из расширения
-                    if action.startswith("sp/run"):
+                    if action.startswith("sp/run"): # Если sp/run - запуск команды в терминале
                         command = action.replace("sp/run ", "")
                         subprocess.run(command, shell=True)
+                    if action == "cancel": # Если команда отмены, возвращаем False
+                        return False
+
     if not command_was_executed: 
-        if text == "cancel": # Если команда - cancel, возвращаем False
-            return False
         response = client.models.generate_content( # Иначе генерируем ответ с помощью genai
             model="gemini-2.0-flash", 
             contents=f"You are the voice assistant Jarvis from the movie Iron Man. {text}, say this as short as possible, in one monolithic text."

@@ -1,0 +1,15 @@
+actions:
+- cancel
+voice:
+  sounds:
+  - Ok
+  - Understood
+  - As you wish
+phrases:
+- отмена
+- заткнись
+- прекрати
+
+- cancel
+- shut up
+- stop

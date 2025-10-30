@@ -5,7 +5,7 @@ import pyaudio
 from google import genai
 import functions
 
-model = Model("vosk-model-en-us-0.22-lgraph")
+model = Model("vosk-models/small-en-us")
 rec = KaldiRecognizer(model, 16000)
 
 access_key = functions.load_yaml_file("keys.yaml")["porcupine"]
