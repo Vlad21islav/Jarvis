@@ -1,11 +1,11 @@
 import pvporcupine
 from pvrecorder import PvRecorder
-from vosk import Model, KaldiRecognizer, SpkModel
+from vosk import Model, KaldiRecognizer
 import pyaudio
 from google import genai
 import functions
 
-model = Model("vosk-models/small-en-us")
+model = Model(f"vosk-models/{functions.choose_model('vosk-models', 'vosk')}")
 rec = KaldiRecognizer(model, 16000)
 
 access_key = functions.load_yaml_file("keys.yaml")["porcupine"]
