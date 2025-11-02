@@ -1,0 +1,13 @@
+actions:
+- sp/run start steam://
+voice:
+  sounds:
+  - Uploading sir
+  - Request completed sir
+phrases:
+- open steam
+- run steam
+- start steam
+
+- открой стим
+- запусти стим
