@@ -1,10 +1,14 @@
 actions:
 - cancel
 voice:
-  sounds:
+  en:
   - Ok
   - Understood
   - As you wish
+  ru:
+  - Хорошо
+  - Понял
+  - Как пожелаете
 phrases:
 - отмена
 - заткнись

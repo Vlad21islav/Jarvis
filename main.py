@@ -14,8 +14,7 @@ keywords = ["jarvis"]
 porcupine = None
 recorder = None
 
-print("Good morning, sir!")
-functions.playRandomSound(["Good morning, sir!"])
+functions.playRandomSound([functions.translate("Good morning, sir!")])
 
 def main_loop():
     try:
@@ -27,8 +26,7 @@ def main_loop():
             keyword_index = porcupine.process(pcm)
             
             if keyword_index >= 0: # Если было произнесено ключевое слово, воспроизводим звук и начинаем слушать команды
-                print("Yes sir!")
-                functions.playRandomSound(["Yes sir"])
+                functions.playRandomSound([functions.translate("Yes sir!")])
                 p = pyaudio.PyAudio()
                 stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=2000)
                 stream.start_stream()
@@ -53,13 +51,13 @@ def main_loop():
                         pass
 
     except KeyboardInterrupt:
-        print("Stopping...")
+        print(functions.translate("Stopping..."))
     except ValueError as e:
         if str(e) =="Failed to read from device.":
-            print("Rebooting...")
+            print(functions.translate("Rebooting..."))
             main_loop()
-    except genai.errors.ServerError as e:
-        print("AI server error. Rebooting...")
+    except genai.errors as e:
+        print(functions.translate("AI server error. Rebooting..."))
         main_loop()
     finally:
         if recorder is not None:

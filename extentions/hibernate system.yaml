@@ -1,9 +1,12 @@
 actions:
 - sp/run timeout /t 7200 & shutdown /h
 voice:
-  sounds:
+  en:
   - Turning off the power
   - Request completed sir
+  ru:
+  - Выключаю питание
+  - Запрос выполнен сэр
 phrases:
 - выключи компьютер
 - выключи ноутбук

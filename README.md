@@ -39,7 +39,7 @@ How to create your own extention (see extentions/hibernate system.yaml as an exa
         Then you have insert some properties:
         <ul>
             <li>actions - command to execute (now only sp/run (it runs command in terminal) and cancel (it just makes Jarvis stop listening comands) are supported)</li>
-            <li>voice/sounds - words to speek while executing actions</li>
+            <li>voice/your languge - words to speek while executing actions</li>
             <li>phrases - phrases to listen to</li>
         </ul>
     </li>

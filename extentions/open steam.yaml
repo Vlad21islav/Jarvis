@@ -1,9 +1,12 @@
 actions:
 - sp/run start steam://
 voice:
-  sounds:
+  en:
   - Uploading sir
   - Request completed sir
+  ru:
+  - Загружаю сэр
+  - Запрос выполнен сэр
 phrases:
 - open steam
 - run steam

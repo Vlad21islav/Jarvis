@@ -7,6 +7,33 @@ from google import genai
 import wave
 from piper import PiperVoice
 
+def load_yaml_file(file_path: str) -> dict:
+    """Загружает содержимое yaml файла и возвращает его как словарь."""
+    with open(file_path, "r", encoding="utf-8") as file:
+        data = yaml.safe_load(file)
+    return data
+
+def choose_language() -> str:
+    languages = list(load_yaml_file("translation.yaml").keys())
+    if len(languages) == 0:
+        print(f"You have no languages in the 'translation.yaml' file.")
+        exit(1)
+    if len(languages) == 1:
+        print(f"Using language: {languages[0]}")
+        return languages[0]
+    if len(languages) > 1:
+        print(f"Which language do you want to use?" + "\n" + "\n".join([f"{i+1}. {lang}" for i, lang in enumerate(languages)]))
+        choice = int(input("Enter the number of the language: "))
+        return languages[choice - 1]
+
+language = choose_language()
+
+def translate(text: str) -> str:
+    translation_file = load_yaml_file("translation.yaml")
+    return translation_file[language][translation_file["en"].index(text)]
+
+translate("Yes sir!")
+
 def choose_model(folder: str, model_name: str) -> str:
     models = os.listdir(folder)
     if len(models) == 0:
@@ -32,7 +59,9 @@ client = genai.Client(api_key=load_yaml_file("keys.yaml")["genai"])
 
 def playRandomSound(list: list[str]) -> None:
     """Проигрывает случайный звук из списка."""
-    text_to_speech(random.choice(list))
+    choice = random.choice(list)
+    print(choice)
+    text_to_speech(choice)
 
 def command(text: str) -> bool:
     """Обрабатывает команду пользователя: если такая команда есть в расширениях, выполняет её, если команда - отмена, возвращает False, иначе генерирует ответ с помощью gemai."""
@@ -44,7 +73,7 @@ def command(text: str) -> bool:
             if any(phrase in text for phrase in data.get("phrases", [])): # Проверяем, есть ли в тексте команды фразы из расширения
                 command_was_executed = True
                 try:
-                    playRandomSound(data.get("voice", {}).get("sounds", [])) # Проигрываем звук, если он есть
+                    playRandomSound(data.get("voice", {}).get(language, [])) # Проигрываем звук, если он есть
                 except IndexError:
                     pass
                 for action in data.get("actions", []): # Выполняем действия из расширения
@@ -57,7 +86,7 @@ def command(text: str) -> bool:
     if not command_was_executed: 
         response = client.models.generate_content( # Иначе генерируем ответ с помощью genai
             model="gemini-2.0-flash", 
-            contents=f"You are the voice assistant Jarvis from the movie Iron Man. {text}, say this as short as possible, in one monolithic text."
+            contents=f"You are the voice assistant Jarvis from the movie Iron Man. {text}, say this as short as possible, in one monolithic text. Speak {language} language."
         )
         print(response.text)
         text_to_speech(response.text)
