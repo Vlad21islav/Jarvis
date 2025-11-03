@@ -56,8 +56,11 @@ def main_loop():
         if str(e) =="Failed to read from device.":
             print(functions.translate("Rebooting..."))
             main_loop()
-    except genai.errors as e:
+    except genai.errors.ServerError as e:
         print(functions.translate("AI server error. Rebooting..."))
+        main_loop()
+    except genai.errors.ClientError as e:
+        print(functions.translate("AI client error. Rebooting..."))
         main_loop()
     finally:
         if recorder is not None:
