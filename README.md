@@ -12,7 +12,7 @@ How to install models:
         </ul>
     </li>
     <li>
-        To install Vosk models you have to:
+        To install Vosk models you have to (english small model will be installed by default):
         <ul>
             <li>Install model from the <a href="https://alphacephei.com/vosk/models/">site</a>.</li>
             <li>Extract file from the zip file and put it inside 'vosk-models' folder.</li>
