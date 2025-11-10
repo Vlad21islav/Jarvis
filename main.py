@@ -5,10 +5,10 @@ import pyaudio
 from google import genai
 import functions
 
-model = Model(f"vosk-models/{functions.choose_model('vosk-models', 'vosk')}")
+model = Model(functions.resource_path(f"vosk-models/{functions.choose_model(functions.resource_path('vosk-models'), 'vosk')}"))
 rec = KaldiRecognizer(model, 16000)
 
-access_key = functions.load_yaml_file("keys.yaml")["porcupine"]
+access_key = functions.load_yaml_file(functions.resource_path("keys.yaml"))["porcupine"]
 keywords = ["jarvis"]
 
 porcupine = None

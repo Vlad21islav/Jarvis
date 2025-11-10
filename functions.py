@@ -6,6 +6,12 @@ import os
 from google import genai
 import wave
 from piper import PiperVoice
+import sys
+
+def resource_path(relative_path):
+    """Функция для получения абсолютного пути к файлам (учитывает как режим разработки, так и работу через PyInstaller)"""
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))  # Проверка, что мы не в PyInstaller
+    return os.path.join(base_path, relative_path)
 
 def load_yaml_file(file_path: str) -> dict:
     """Загружает содержимое yaml файла и возвращает его как словарь."""
@@ -14,7 +20,7 @@ def load_yaml_file(file_path: str) -> dict:
     return data
 
 def choose_language() -> str:
-    languages = list(load_yaml_file("translation.yaml").keys())
+    languages = list(load_yaml_file(resource_path("translation.yaml")).keys())
     if len(languages) == 0:
         print(f"You have no languages in the 'translation.yaml' file.")
         exit(1)
@@ -29,10 +35,8 @@ def choose_language() -> str:
 language = choose_language()
 
 def translate(text: str) -> str:
-    translation_file = load_yaml_file("translation.yaml")
+    translation_file = load_yaml_file(resource_path("translation.yaml"))
     return translation_file[language][translation_file["en"].index(text)]
-
-translate("Yes sir!")
 
 def choose_model(folder: str, model_name: str) -> str:
     models = os.listdir(folder)
@@ -47,7 +51,7 @@ def choose_model(folder: str, model_name: str) -> str:
         choice = int(input("Enter the number of the model: "))
         return models[choice - 1]
 
-voice = PiperVoice.load(f"piper-models/{choose_model('piper-models', 'piper')}/voice.onnx")
+voice = PiperVoice.load(resource_path(f"piper-models/{choose_model(resource_path('piper-models'), 'piper')}/voice.onnx"))
 
 def load_yaml_file(file_path: str) -> dict:
     """Загружает содержимое yaml файла и возвращает его как словарь."""
@@ -55,7 +59,7 @@ def load_yaml_file(file_path: str) -> dict:
         data = yaml.safe_load(file)
     return data
 
-client = genai.Client(api_key=load_yaml_file("keys.yaml")["genai"])
+client = genai.Client(api_key=load_yaml_file(resource_path("keys.yaml"))["genai"])
 
 def playRandomSound(list: list[str]) -> None:
     """Проигрывает случайный звук из списка."""
@@ -66,9 +70,9 @@ def playRandomSound(list: list[str]) -> None:
 def command(text: str) -> bool:
     """Обрабатывает команду пользователя: если такая команда есть в расширениях, выполняет её, если команда - отмена, возвращает False, иначе генерирует ответ с помощью gemai."""
     command_was_executed = False
-    extentions = os.listdir("extentions") # Получаем список расширений
+    extentions = os.listdir(resource_path("extentions")) # Получаем список расширений
     for file in extentions:
-        with open(f"extentions/{file}", "r", encoding="utf-8") as file:
+        with open(resource_path(f"extentions/{file}"), "r", encoding="utf-8") as file:
             data = yaml.safe_load(file)
             if any(phrase in text for phrase in data.get("phrases", [])): # Проверяем, есть ли в тексте команды фразы из расширения
                 command_was_executed = True
@@ -94,7 +98,7 @@ def command(text: str) -> bool:
 
 def text_to_speech(text: str) -> None:
     """Преобразует текст в речь и воспроизводит её."""
-    with wave.open("test.wav", "wb") as wav_file:  
+    with wave.open(resource_path("test.wav"), "wb") as wav_file:  
         voice.synthesize_wav(text, wav_file)
 
-    winsound.PlaySound("test.wav", winsound.SND_FILENAME)
+    winsound.PlaySound(resource_path("test.wav"), winsound.SND_FILENAME)
