@@ -1,6 +1,6 @@
 This is Jarvis - a voice assistant with real voice from the Iron man film. For text generation, I use Gemini from Google, but because of this it doesn't work in Russia. 
 
-To use Jarvis you have to install the repository, python and models and create keys.yaml file.
+To use Jarvis you have to install the repository, python and models and create keys.yaml file or you can download .exe file and edit everything in _instances file.
 
 How to install models:
 <ul>
