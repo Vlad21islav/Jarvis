@@ -1,0 +1,5 @@
+vosk-model: auto
+piper-model: auto
+wakeword-library: auto
+language: auto
+ai-data: You are the voice assistant Jarvis from the movie Iron Man. {text}, say this as short as possible, in one monolithic text. Speak {language} language.
