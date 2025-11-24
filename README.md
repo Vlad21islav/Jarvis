@@ -44,3 +44,10 @@ How to create your own extention (see extentions/hibernate system.yaml as an exa
         </ul>
     </li>
 </ul>
+
+Jarvis versions:
+<ul>
+    <li>
+        <a href="https://github.com/Vlad21islav/Jarvis/releases/tag/English-small/">small-english-beta-jarvis-version</a>
+    </li>
+</ul>
