@@ -54,7 +54,14 @@ def command(text: str) -> bool:
     if not command_was_executed: 
         response = client.models.generate_content( # Иначе генерируем ответ с помощью genai
             model="gemini-2.0-flash", 
-            contents=f'{quetions.language.join(text.join(load_yaml_file(resource_path("config.yaml"))["ai-data"].split("{text}")).split("{language}"))}'
+            contents=f'{
+                quetions.language.join(
+                text.join(
+                load_yaml_file(resource_path("config.yaml"))["ai-data"]
+                .split("{text}"))
+                .split("{language}"))
+                }'  
+                # Заменяем {text} на текст, сказанный пользователем и {language} на выбранный язык
         )
         print(response.text)
         text_to_speech(response.text)

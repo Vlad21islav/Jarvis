@@ -4,6 +4,7 @@ import os
 import functions
 
 def choose_language() -> str:
+    """Выбор языка"""
     configured_language = functions.load_yaml_file(functions.resource_path("config.yaml")).get("language", "auto")
     if configured_language != "auto":
         return configured_language
@@ -21,6 +22,7 @@ def choose_language() -> str:
             return languages[choice - 1]
     
 def choose_wakeword_library() -> str:
+    """Выбор библиотеки для распознования слова Jarvis"""
     configured_library = functions.load_yaml_file(functions.resource_path("config.yaml")).get("wakeword-library", "auto")
     if configured_library != "auto":
         return configured_library
@@ -32,6 +34,7 @@ def choose_wakeword_library() -> str:
         return "openwakewod" if choice == 1 else "porcupine"
 
 def choose_model(folder: str, model_name: str) -> str:
+    """Выбор модели для распознования голоса"""
     configured_model = functions.load_yaml_file(functions.resource_path("config.yaml")).get(f"{model_name}-model", "auto")
     if configured_model != "auto":
         return configured_model

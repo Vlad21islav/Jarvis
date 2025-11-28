@@ -14,7 +14,7 @@ functions.playRandomSound([functions.translate("Good morning, sir!")])
 
 wakeword_library = quetions.choose_wakeword_library()
 
-if wakeword_library == "openwakewod":
+if wakeword_library == "openwakewod": # Проверяем какая библиотека выбрана
     openwakeword.utils.download_models()
     openwakeword_model = openwakeword.Model(wakeword_models=["jarvis"])
 elif wakeword_library == "porcupine":
