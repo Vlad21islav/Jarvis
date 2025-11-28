@@ -10,8 +10,6 @@ import numpy as np
 
 rec = KaldiRecognizer(quetions.vosk_model, 16000)
 
-functions.playRandomSound([functions.translate("Good morning, sir!")])
-
 wakeword_library = quetions.choose_wakeword_library()
 
 if wakeword_library == "openwakewod": # Проверяем какая библиотека выбрана
@@ -23,6 +21,8 @@ elif wakeword_library == "porcupine":
 
     porcupine = None
     recorder = None
+
+functions.playRandomSound([functions.translate("Good morning, sir!")])
 
 def main_loop():
     try:
