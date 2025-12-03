@@ -1,0 +1,20 @@
+actions:
+- keyboard.tap space
+voice:
+  en:
+  - As you wish
+  - Request completed sir
+  ru:
+  - Как пожелаете
+  - Запрос выполнен сэр
+phrases:
+- сними с паузы
+- продолжи
+- поставь на паузу
+- останови
+
+- take it off pause
+- go on
+- resume
+- put it on pause
+- stop
