@@ -3,7 +3,6 @@ import pvporcupine
 from pvrecorder import PvRecorder
 from vosk import KaldiRecognizer
 import pyaudio
-from google import genai
 import functions
 import openwakeword
 import numpy as np
@@ -12,7 +11,7 @@ rec = KaldiRecognizer(quetions.vosk_model, 16000)
 
 wakeword_library = quetions.choose_wakeword_library()
 
-if wakeword_library == "openwakewod": # Проверяем какая библиотека выбрана
+if wakeword_library == "openwakeword": # Проверяем какая библиотека выбрана
     openwakeword.utils.download_models()
     openwakeword_model = openwakeword.Model(wakeword_models=["jarvis"])
 elif wakeword_library == "porcupine":
@@ -27,6 +26,7 @@ functions.playRandomSound([functions.translate("Good morning, sir!")])
 def main_loop():
     try:
         if wakeword_library == "openwakewod":
+            activated = False
             p = pyaudio.PyAudio()
             stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=1024)
             while True:
@@ -34,9 +34,14 @@ def main_loop():
                 audio_np = np.frombuffer(audio_data, dtype=np.int16)
                 prediction = openwakeword_model.predict(audio_np)
 
-                for model_name, score in prediction.items():
-                    if score > 0.5:
-                        vosk_listen()
+                score = prediction.get("jarvis", 0.0)
+
+                if score > 0.5 and not activated:
+                    vosk_listen()
+                    activated = True
+                elif score < 0.3:  # сброс активации, когда вероятность снова низкая
+                    activated = False
+  
         elif wakeword_library == "porcupine":
             porcupine = pvporcupine.create(access_key=access_key, keywords=keywords)
             recorder = PvRecorder(device_index=-1, frame_length=porcupine.frame_length)
@@ -48,18 +53,27 @@ def main_loop():
                 if keyword_index >= 0: # Если было произнесено ключевое слово, воспроизводим звук и начинаем слушать команды
                     vosk_listen()
 
+        elif wakeword_library == "vosk":
+            p = pyaudio.PyAudio()
+            stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=2000)
+            stream.start_stream()
+            while True:
+                data = stream.read(4000)
+                if len(data) == 0:
+                    break
+                if rec.AcceptWaveform(data):
+                    text = rec.Result()[14:-3]
+                    if text.lower() == functions.translate("jarvis"):
+                        vosk_listen()
+                else:
+                    pass
+
     except KeyboardInterrupt:
         print(functions.translate("Stopping..."))
     except ValueError as e:
         if str(e) =="Failed to read from device.":
             print(functions.translate("Rebooting..."))
             main_loop()
-    except genai.errors.ServerError as e:
-        print(functions.translate("AI server error. Rebooting..."))
-        main_loop()
-    except genai.errors.ClientError as e:
-        print(functions.translate("AI client error. Rebooting..."))
-        main_loop()
     finally:
         try:
             recorder.stop()

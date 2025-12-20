@@ -22,12 +22,12 @@ How to install models:
 
 How to create keys.yaml file:
 <ul>
-    <li>create file named keys.yaml</li>
+    <li>Create file named keys.yaml</li>
     <li>
-        fill it with:
+        Fill it with:
         <ul>
-            <li>porcupine: your porcupine api key (you can create it <a href="https://console.picovoice.ai/">here</a>)</li>
-            <li>genai: your gemini api key (you can create it <a href="https://aistudio.google.com/app/api-keys/">here</a>)</li>
+            <li>Porcupine: your porcupine api key (you can create it <a href="https://console.picovoice.ai/">here</a>)</li>
+            <li>Genai: your gemini api key (you can create it <a href="https://aistudio.google.com/app/api-keys/">here</a>)</li>
         </ul>
     </li>
 </ul>
@@ -38,9 +38,21 @@ How to create your own extention (see extentions/hibernate system.yaml as an exa
     <li>
         Then you have insert some properties:
         <ul>
-            <li>actions - command to execute (now only sp/run (it runs command in terminal) and cancel (it just makes Jarvis stop listening comands) are supported)</li>
-            <li>voice/your languge - words to speek while executing actions</li>
-            <li>phrases - phrases to listen to</li>
+            <li>actions - Command to execute</li>
+            <li>voice/your languge - Words to speek while executing actions</li>
+            <li>phrases - Phrases to listen to</li>
+        </ul>
+    </li>
+    <li>
+        actions:
+        <ul>
+            <li>sp/run - Runs a command in terminal. How to use: <code>sp/run {windows command}</code></li>
+            <li>keyboard.press - Presses a button on a keyboard. How to use: <code>keyboard.press {key}</code></li>
+            <li>keyboard.release - Releases a button on a keybord. How to use: <code>keyboard.release {key}</code></li>
+            <li>keyboard.tap - Presses and releases a button on a keybord. How to use: <code>keyboard.tap {key}</code></li>
+            <li>keyboard.type - Types something. How to use: <code>keyboard.type {text}</code></li>
+            <li>plan - In any seconds plans any action. How to use: <code>plan {action}</code></li>
+            <li>cencel - Stops listening vosk. How to use: <code>cencel</code></li>
         </ul>
     </li>
 </ul>

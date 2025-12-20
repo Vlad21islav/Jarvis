@@ -29,9 +29,16 @@ def choose_wakeword_library() -> str:
     else:
         print(f"Which library do you want to use?\n" + 
             "1. Openwakeword (Only English)\n" +
-            "2. Porcupine (Only in python, doesn't work in exe)\n")
+            "2. Porcupine (Only in python, doesn't work in exe)\n" + 
+            "3. Vosk (The slowest)")
         choice = int(input("Enter the number of the language: "))
-        return "openwakewod" if choice == 1 else "porcupine"
+        match choice:
+            case 1:
+                return "openwakeword"
+            case 2:
+                return "porcupine"
+            case 3:
+                return "vosk"
 
 def choose_model(folder: str, model_name: str) -> str:
     """Выбор модели для распознования голоса"""
