@@ -59,8 +59,6 @@ How to create your own extention (see extentions/hibernate system.yaml as an exa
 
 Jarvis versions:
 <ul>
-    <li>
-        <a href="https://github.com/Vlad21islav/Jarvis/releases/tag/English-small/">small-english-beta-jarvis-version</a>
-        <a href="https://github.com/Vlad21islav/Jarvis/releases/tag/English-Russian-small/">small-english-russian-first-jarvis-version</a>
-    </li>
+    <li><a href="https://github.com/Vlad21islav/Jarvis/releases/tag/English-small/">small-english-beta-jarvis-version</a></li>
+    <li><a href="https://github.com/Vlad21islav/Jarvis/releases/tag/English-Russian-small/">small-english-russian-first-jarvis-version</a></li>
 </ul>
