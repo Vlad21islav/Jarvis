@@ -81,7 +81,7 @@ def command(text: str) -> bool:
                     if not run_action(action):
                         return False
 
-    if not command_was_executed: # Иначе генерируем ответ с помощью genai, но так как он не работает в России, я создал сервер в Америке для того, чтобы он был посредником
+    if not command_was_executed and load_yaml_file(resource_path("config.yaml"))["use-gpt"]: # Иначе генерируем ответ с помощью genai, но так как он не работает в России, я создал сервер в Америке для того, чтобы он был посредником
         response = requests.get("https://Vlad21islav.pythonanywhere.com/ask", params={
             "query": load_yaml_file(resource_path("config.yaml"))["ai-data"].replace("{language}", quetions.language).replace("{text}", text), 
                 # Заменяем {text} на текст, сказанный пользователем и {language} на выбранный язык 
