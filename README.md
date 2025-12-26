@@ -79,7 +79,7 @@ To use Jarvis you have to install the repository, python and models and create k
             <tr>
                 <td>plan</td>
                 <td>In any seconds plans any action</td>
-                <td><code>plan {action}</code></td>
+                <td><code>plan {time} {action}</code></td>
             </tr>
             <tr>
                 <td>cencel</td>
