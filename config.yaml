@@ -1,7 +1,8 @@
-vosk-model: auto
-piper-model: auto
-wakeword-library: auto
-language: auto
-use-gpt: True
-ai-data: You are the voice assistant Jarvis from the movie Iron Man. {text}, say this as short as possible, in one monolithic text. Speak {language} language.
+ai-data: You are the voice assistant Jarvis from the movie Iron Man. {text}, say this
+  as short as possible, in one monolithic text. Speak {language} language.
 genai-version: gemini-2.5-flash
+language: ru
+piper-model: ru-dmitry-medium
+use-gpt: 'false'
+vosk-model: small-ru
+wakeword-library: vosk

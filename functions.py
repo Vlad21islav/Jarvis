@@ -5,10 +5,17 @@ import subprocess
 import os
 import wave
 import sys
-import quetions
 from pynput.keyboard import Key, Controller
 from threading import Timer
+from piper import PiperVoice
 import requests
+import main
+
+def display(text: str) -> None:
+    """Выводит текст в консоль и в приложение."""
+    print(text)
+    with open("resources/output.txt", "w", encoding="utf-8") as file:
+        file.write(text)
 
 def resource_path(relative_path):
     """Функция для получения абсолютного пути к файлам (учитывает как режим разработки, так и работу через PyInstaller)"""
@@ -24,7 +31,7 @@ def load_yaml_file(file_path: str) -> dict:
 def playRandomSound(list: list[str]) -> None:
     """Проигрывает случайный звук из списка."""
     choice = random.choice(list)
-    print(choice)
+    display(choice)
     text_to_speech(choice)
 
 def run_action(action: str) -> bool:
@@ -74,31 +81,69 @@ def command(text: str) -> bool:
             if any(phrase in text for phrase in data.get("phrases", [])): # Проверяем, есть ли в тексте команды фразы из расширения
                 command_was_executed = True
                 try:
-                    playRandomSound(data.get("voice", {}).get(quetions.language, [])) # Проигрываем звук, если он есть
+                    playRandomSound(data.get("voice", {}).get(load_yaml_file(resource_path("config.yaml"))["language"], [])) # Проигрываем звук, если он есть
                 except IndexError:
                     pass
                 for action in data.get("actions", []): # Выполняем действия из расширения
                     if not run_action(action):
                         return False
 
-    if not command_was_executed and load_yaml_file(resource_path("config.yaml"))["use-gpt"]: # Иначе генерируем ответ с помощью genai, но так как он не работает в России, я создал сервер в Америке для того, чтобы он был посредником
+    if not command_was_executed and load_yaml_file(resource_path("config.yaml"))["use-gpt"].lower() == "true": # Иначе генерируем ответ с помощью genai, но так как он не работает в России, я создал сервер в Америке для того, чтобы он был посредником
         response = requests.get("https://Vlad21islav.pythonanywhere.com/ask", params={
-            "query": load_yaml_file(resource_path("config.yaml"))["ai-data"].replace("{language}", quetions.language).replace("{text}", text), 
+            "query": load_yaml_file(resource_path("config.yaml"))["ai-data"].replace("{language}", load_yaml_file(resource_path("config.yaml"))["language"]).replace("{text}", text), 
                 # Заменяем {text} на текст, сказанный пользователем и {language} на выбранный язык 
             "api_key": load_yaml_file(resource_path("keys.yaml"))["genai"], 
             "model_version": load_yaml_file(resource_path("config.yaml"))["genai-version"]
         })
-        print(response.json()["answer"])
+        display(response.json()["answer"])
         text_to_speech(response.json()["answer"])
     return True
 
 def text_to_speech(text: str) -> None:
     """Преобразует текст в речь и воспроизводит её."""
-    with wave.open(resource_path("test.wav"), "wb") as wav_file:  
-        quetions.piper_voice.synthesize_wav(text, wav_file)
+    piper_voice = PiperVoice.load(resource_path(f"piper-models/{load_yaml_file(resource_path('config.yaml'))['piper-model']}/voice.onnx"))
+    with wave.open(resource_path("resources/test.wav"), "wb") as wav_file:
+        piper_voice.synthesize_wav(text, wav_file)
 
-    winsound.PlaySound(resource_path("test.wav"), winsound.SND_FILENAME)
+    winsound.PlaySound(resource_path("resources/test.wav"), winsound.SND_FILENAME)
 
 def translate(text: str) -> str:
     translation_file = load_yaml_file(resource_path("translation.yaml"))
-    return translation_file[quetions.language][translation_file["en"].index(text)]
+    return translation_file[load_yaml_file(resource_path("config.yaml"))["language"]][translation_file["en"].index(text)]
+
+def edit_config(config):
+    config["vosk-model"] = {
+        "options": os.listdir("./vosk-models"), 
+        "selected": config["vosk-model"],
+        "type": "select",
+    }
+    config["piper-model"] = {
+        "options": os.listdir("./piper-models"), 
+        "selected": config["piper-model"],
+        "type": "select",
+    }
+    config["wakeword-library"] = {
+        "options": ["openwakeword", "porcupine", "vosk"],
+        "selected": config["wakeword-library"],
+        "type": "select",
+    }
+    config["language"] = {
+        "options": list(load_yaml_file("./translation.yaml").keys()),
+        "selected": config["language"],
+        "type": "select",
+    }
+    config["use-gpt"] = {
+        "options": [True, False],
+        "selected": config["use-gpt"],
+        "type": "select",
+    }
+    config["ai-data"] = {
+        "value": config["ai-data"],
+        "type": "input",
+    }
+    config["genai-version"] = {
+        "options": ["gemini-2.5-flash", "gemini-2.5"],
+        "selected": config["genai-version"],
+        "type": "select",
+    }
+    return config

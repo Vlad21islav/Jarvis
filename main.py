@@ -1,27 +1,14 @@
-import quetions
 import pvporcupine
 from pvrecorder import PvRecorder
-from vosk import KaldiRecognizer
+from vosk import KaldiRecognizer, Model
 import pyaudio
 import functions
 import openwakeword
 import numpy as np
-
-rec = KaldiRecognizer(quetions.vosk_model, 16000)
-
-wakeword_library = quetions.choose_wakeword_library()
-
-if wakeword_library == "openwakeword": # Проверяем какая библиотека выбрана
-    openwakeword.utils.download_models()
-    openwakeword_model = openwakeword.Model(wakeword_models=["jarvis"])
-elif wakeword_library == "porcupine":
-    access_key = functions.load_yaml_file(functions.resource_path("keys.yaml"))["porcupine"]
-    keywords = ["jarvis"]
-
-    porcupine = None
-    recorder = None
-
-functions.playRandomSound([functions.translate("Good morning, sir!")])
+import webview
+import yaml
+import os
+import threading
 
 def main_loop():
     try:
@@ -62,9 +49,13 @@ def main_loop():
                 if len(data) == 0:
                     break
                 if rec.AcceptWaveform(data):
-                    text = rec.Result()[14:-3]
-                    if text.lower() == functions.translate("jarvis"):
-                        vosk_listen()
+                    text = rec.Result()[14:-3].lower()
+                    if functions.translate("jarvis") in text:
+                        input_text = text.replace(functions.translate("jarvis"), "")
+                        if len(input_text) >= 2:
+                            vosk_listen(input_text)
+                        else:
+                            vosk_listen()
                 else:
                     pass
 
@@ -88,13 +79,17 @@ def main_loop():
         except UnboundLocalError:
             pass
 
-def vosk_listen():
+def vosk_listen(input_text: str = None):
     """Функция прослушивания команд с помощью Vosk."""
-    functions.playRandomSound([functions.translate("Yes sir!")])
+    counter = 0
+    if input_text:
+        if not functions.command(input_text):
+            counter = 6
+    else:
+        functions.playRandomSound([functions.translate("Yes sir!")])
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=2000)
     stream.start_stream()
-    counter = 0
     while True:
         data = stream.read(4000)
         if len(data) == 0:
@@ -114,5 +109,84 @@ def vosk_listen():
         else:
             pass
 
+class API:
+    def submit(self, file_path, text):
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(text)
+    
+    def get_file_content(self, file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            content = file.read()
+        return content
+
+    def get_extentions(self):
+        path = functions.resource_path('extentions')
+        items = os.listdir(path)
+        return items
+    
+    def add_extention(self, name):
+        path = functions.resource_path(f'extentions/{name}')
+        with open(path, 'w') as f:
+            pass
+    
+    def delete_extention(self, name):
+        path = functions.resource_path(f'extentions/{name}')
+        os.remove(path)
+    
+    def get_config(self):
+        config_path = functions.resource_path('config.yaml')
+        config = functions.load_yaml_file(config_path)
+        config = functions.edit_config(config)
+        return config
+    
+    def change_config(self, key, value):
+        config_path = functions.resource_path('config.yaml')
+        config = functions.load_yaml_file(config_path)
+        config[key] = value
+        with open(config_path, 'w', encoding='utf-8') as file:
+            yaml.dump(config, file)
+
+    def send_command(self, text):
+        print(text)
+        functions.command(text)
+
+    def get_keys(self):
+        keys_path = functions.resource_path('keys.yaml')
+        keys = functions.load_yaml_file(keys_path)
+        return keys
+    
+    def change_keys(self, key, value):
+        keys_path = functions.resource_path('keys.yaml')
+        keys = functions.load_yaml_file(keys_path)
+        keys[key] = value
+        with open(keys_path, 'w', encoding='utf-8') as file:
+            yaml.dump(keys, file)
+
+    def get_last_displayed_text(self):
+        with open("resources/output.txt", "r", encoding="utf-8") as file:
+            text = file.read()
+        return text
+    
 if __name__ == "__main__":
-    main_loop()
+    rec = KaldiRecognizer(Model(functions.resource_path(f"vosk-models/{functions.load_yaml_file(functions.resource_path('config.yaml'))['vosk-model']}")), 16000)
+
+    wakeword_library = functions.load_yaml_file(functions.resource_path("config.yaml"))["wakeword-library"]
+
+    if wakeword_library == "openwakeword": # Проверяем какая библиотека выбрана
+        openwakeword.utils.download_models()
+        openwakeword_model = openwakeword.Model(wakeword_models=["jarvis"])
+    elif wakeword_library == "porcupine":
+        access_key = functions.load_yaml_file(functions.resource_path("keys.yaml"))["porcupine"]
+        keywords = ["jarvis"]
+
+        porcupine = None
+        recorder = None
+
+    functions.playRandomSound([functions.translate("Good morning, sir!")])
+
+    api = API()
+
+    thread = threading.Thread(target=main_loop, daemon=True).start()
+
+    window = webview.create_window("Jarvis", functions.resource_path("visual/index.html"), js_api=api)
+    webview.start(debug=True)
