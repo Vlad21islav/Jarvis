@@ -9,7 +9,6 @@ from pynput.keyboard import Key, Controller
 from threading import Timer
 from piper import PiperVoice
 import requests
-import main
 
 def display(text: str) -> None:
     """Выводит текст в консоль и в приложение."""
@@ -101,7 +100,7 @@ def command(text: str) -> bool:
 
 def text_to_speech(text: str) -> None:
     """Преобразует текст в речь и воспроизводит её."""
-    piper_voice = PiperVoice.load(resource_path(f"piper-models/{load_yaml_file(resource_path('config.yaml'))['piper-model']}/voice.onnx"))
+    global piper_voice
     with wave.open(resource_path("resources/test.wav"), "wb") as wav_file:
         piper_voice.synthesize_wav(text, wav_file)
 
@@ -147,3 +146,5 @@ def edit_config(config):
         "type": "select",
     }
     return config
+
+piper_voice = PiperVoice.load(resource_path(f"piper-models/{load_yaml_file(resource_path('config.yaml'))['piper-model']}/voice.onnx"))
