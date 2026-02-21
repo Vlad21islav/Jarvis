@@ -1,6 +1,6 @@
 This is Jarvis - a voice assistant with real voice from the Iron man film. For text generation you can choose between Google Gemini and Sber GigaChat.
 
-To use Jarvis you have to install the repository, python and models and create resourses/keys.yaml file or you can download .exe file and edit everything in _instances file.
+To use Jarvis you have to install the repository, python and models or you can download .exe file and edit everything in _instances file.
 
 <h3>How to install models:</h3>
 <ul>
@@ -20,17 +20,11 @@ To use Jarvis you have to install the repository, python and models and create r
     </li>
 </ul>
 
-<h3>How to create keys.yaml file:</h3>
+<h3>Where to find api keys:</h3>
 <ul>
-    <li>Create file named keys.yaml in resources folder.</li>
-    <li>
-        Fill it with:
-        <ul>
-            <li>Porcupine: your porcupine api key (you can create it <a href="https://console.picovoice.ai/">here</a>).</li>
-            <li>Genai: your gemini api key (you can create it <a href="https://aistudio.google.com/app/api-keys/">here</a>).</li>
-            <li>Gigachat: your gigachat Authorization key (you can create it <a href="https://developers.sber.ru/studio/workspaces/">here</a>).</li>
-        </ul>
-    </li>
+    <li>Porcupine: your porcupine api key (you can create it <a href="https://console.picovoice.ai/">here</a>).</li>
+    <li>Genai: your gemini api key (you can create it <a href="https://aistudio.google.com/app/api-keys/">here</a>).</li>
+    <li>Gigachat: your gigachat Authorization key (you can create it <a href="https://developers.sber.ru/studio/workspaces/">here</a>).</li>
 </ul>
 
 <h3>How to create your own extention (see hibernate system as an example):</h3>
