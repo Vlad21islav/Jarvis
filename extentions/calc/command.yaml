@@ -1,0 +1,16 @@
+actions:
+- sp/run start calc
+voice:
+  en:
+  - Uploading sir
+  - Request completed sir
+  ru:
+  - Загружаю сэр
+  - Запрос выполнен сэр
+phrases:
+- open calculator
+- run calculator
+- start calculator
+
+- открой калькулятор
+- запусти калькулятор

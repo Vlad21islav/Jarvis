@@ -1,0 +1,13 @@
+actions:
+- keyboard.send next track
+voice:
+  en:
+  - As you wish
+  - Request completed sir
+  ru:
+  - Как пожелаете
+  - Запрос выполнен сэр
+phrases:
+- следующий
+
+- next

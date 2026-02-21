@@ -1,8 +1,10 @@
 ai-data: You are the voice assistant Jarvis from the movie Iron Man. {text}, say this
-  as short as possible, in one monolithic text. Speak {language} language.
+  as short as possible, in one monolithic text. Speak {language} language. Give answer
+  in one line.
 genai-version: gemini-2.5-flash
+gigachat-version: GigaChat-2
+gpt-model: don't use gpt
 language: ru
 piper-model: ru-dmitry-medium
-use-gpt: 'false'
 vosk-model: small-ru
 wakeword-library: vosk

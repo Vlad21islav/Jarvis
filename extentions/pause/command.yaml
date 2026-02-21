@@ -1,5 +1,5 @@
 actions:
-- keyboard.tap space
+- keyboard.send play/pause media
 voice:
   en:
   - As you wish

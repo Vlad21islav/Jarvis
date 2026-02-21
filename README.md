@@ -1,6 +1,6 @@
-This is Jarvis - a voice assistant with real voice from the Iron man film. For text generation, I use Gemini from Google and after some manipulations with server, it now can be used in Russia.
+This is Jarvis - a voice assistant with real voice from the Iron man film. For text generation you can choose between Google Gemini and Sber GigaChat.
 
-To use Jarvis you have to install the repository, python and models and create keys.yaml file or you can download .exe file and edit everything in _instances file.
+To use Jarvis you have to install the repository, python and models and create resourses/keys.yaml file or you can download .exe file and edit everything in _instances file.
 
 <h3>How to install models:</h3>
 <ul>
@@ -22,19 +22,20 @@ To use Jarvis you have to install the repository, python and models and create k
 
 <h3>How to create keys.yaml file:</h3>
 <ul>
-    <li>Create file named keys.yaml</li>
+    <li>Create file named keys.yaml in resources folder.</li>
     <li>
         Fill it with:
         <ul>
-            <li>Porcupine: your porcupine api key (you can create it <a href="https://console.picovoice.ai/">here</a>)</li>
-            <li>Genai: your gemini api key (you can create it <a href="https://aistudio.google.com/app/api-keys/">here</a>)</li>
+            <li>Porcupine: your porcupine api key (you can create it <a href="https://console.picovoice.ai/">here</a>).</li>
+            <li>Genai: your gemini api key (you can create it <a href="https://aistudio.google.com/app/api-keys/">here</a>).</li>
+            <li>Gigachat: your gigachat Authorization key (you can create it <a href="https://developers.sber.ru/studio/workspaces/">here</a>).</li>
         </ul>
     </li>
 </ul>
 
-<h3>How to create your own extention (see extentions/hibernate system.yaml as an example):</h3>
+<h3>How to create your own extention (see hibernate system as an example):</h3>
 <ul>
-    <li>Create file with any name you want to, but it should have the .yaml extention</li>
+    <li>Click "Add extention" in Jarvis app and enter any name you want and click on it in extentions list.</li>
     <li>
         Then you have insert some properties:
         <ul>
@@ -57,24 +58,14 @@ To use Jarvis you have to install the repository, python and models and create k
                 <td><code>sp/run {windows command}</code></td>
             </tr>
             <tr>
-                <td>keyboard.press</td>
-                <td>Presses a button on a keyboard</td>
-                <td><code>keyboard.press {key}</code></td>
+                <td>keyboard.send</td>
+                <td>Presses and releases a button or combination of buttons on a keybord</td>
+                <td><code>keyboard.send {key}</code></td>
             </tr>
             <tr>
-                <td>keyboard.release</td>
-                <td>Releases a button on a keybord</td>
-                <td><code>keyboard.release {key}</code></td>
-            </tr>
-            <tr>
-                <td>keyboard.tap</td>
-                <td>Presses and releases a button on a keybord</td>
-                <td><code>keyboard.tap {key}</code></td>
-            </tr>
-            <tr>
-                <td>keyboard.type</td>
-                <td>Types something</td>
-                <td><code>keyboard.type {text}</code></td>
+                <td>keyboard.write</td>
+                <td>Writes something</td>
+                <td><code>keyboard.write {text}</code></td>
             </tr>
             <tr>
                 <td>plan</td>
