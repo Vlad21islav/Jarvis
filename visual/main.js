@@ -1,12 +1,34 @@
-var output_text = ''
+var output_text = '';
 
 function edit_content(HTML) {
     document.getElementById("content").innerHTML = HTML;
-}
+};
 
 function add_content(HTML) {
     document.getElementById("content").innerHTML += HTML;
-}
+};
+
+function update_app_theme(theme=NaN) {
+    if (!theme) {
+        window.pywebview.api.get_config().then(result => {
+            if (result["app-theme"]["selected"] == 'Auto') { 
+                window.pywebview.api.get_auto_theme().then(result => {
+                    !result ? document.body.className='dark-mode' : document.body.className='light-mode';
+                });
+                return;
+            };
+            result["app-theme"]["selected"] == 'Dark' ? document.body.className='dark-mode' : document.body.className='light-mode';
+        });
+        return;
+    };
+    if (theme == 'Auto') { 
+        window.pywebview.api.get_auto_theme().then(result => {
+            !result ? document.body.className='dark-mode' : document.body.className='light-mode';
+        });
+        return;
+    };
+    theme == 'Dark' ? document.body.className='dark-mode' : document.body.className='light-mode';
+};
 
 window.load_extentions = function() {
     edit_content(`
@@ -98,7 +120,6 @@ window.load_main = function() {
                 <div class="outer-ring"></div>
             </div>
         </div>
-        <button class="change-mode-button" onclick="document.body.className === 'light-mode' ? document.body.className='dark-mode' : document.body.className='light-mode'">◐</button>
     `);
     window.update_output_text = function(text) {
         output = document.getElementById("output");
@@ -119,6 +140,7 @@ window.load_settings = function() {
         `;
         if (config["type"] === "select") {
             window.change_config = function(key, value) {
+                if (key === "app-theme") { update_app_theme(value); }
                 window.pywebview.api.change_config(key, value);
             };
 
@@ -191,5 +213,6 @@ window.load_api_keys = function() {
 }
 
 window.addEventListener('pywebviewready', () => {
+    update_app_theme();
     load_main();
 });

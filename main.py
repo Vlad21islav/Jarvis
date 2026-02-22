@@ -79,9 +79,6 @@ def main_loop():
     except OSError:
         print(functions.translate("Rebooting..."))
         main_loop()
-    except webview:
-        print(functions.translate("Rebooting..."))
-        main_loop()
     finally:
         try:
             recorder.stop()
@@ -191,6 +188,10 @@ class API:
         with open(keys_path, 'w', encoding='utf-8') as file:
             yaml.dump(keys, file)
 
+    def get_auto_theme(self) -> str:
+        global theme
+        return theme
+
 def create_tray_icon(window):
     global icon
 
@@ -213,6 +214,8 @@ def create_tray_icon(window):
     icon.run()
 
 def watch_theme():
+    global theme
+
     def is_light_theme():
         try:
             key = winreg.OpenKey(
@@ -227,10 +230,11 @@ def watch_theme():
     last = None
     while True:
         time.sleep(1)
-        now = is_light_theme()
-        if now != last:
-            icon.icon = Image.open("images/dark icon.ico" if now else "images/light icon.ico")
-            last = now
+        theme = is_light_theme()
+        if theme != last:
+            if api.get_config()["app-theme"]["selected"] == "Auto": window.evaluate_js(f'update_app_theme("{"Light" if theme else "Dark"}")')
+            icon.icon = Image.open("images/dark icon.ico" if theme else "images/light icon.ico")
+            last = theme
 
 if __name__ == "__main__":
     vosk_model = functions.load_yaml_file(functions.resource_path("resources/config.yaml"))["vosk-model"]
@@ -246,7 +250,7 @@ if __name__ == "__main__":
         keywords = ["jarvis"]
 
         porcupine = None
-        recorder = None
+        recorder = None 
 
     functions.playRandomSound([functions.translate("Good morning, sir!")])
 
@@ -259,6 +263,7 @@ if __name__ == "__main__":
 
     threading.Thread(target=create_tray_icon, args=(window,), daemon=True).start()
 
+    theme = None
     threading.Thread(target=watch_theme, daemon=True).start()
 
     functions.set_window(window)

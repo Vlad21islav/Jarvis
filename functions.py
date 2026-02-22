@@ -202,6 +202,13 @@ def edit_config(config: dict) -> dict:
         "name": "Sber GigaChat version",
         "description": "Version of Sber AI",
     }
+    config["app-theme"] = {
+        "options": ["Auto", "Dark", "Light"],
+        "selected": config["app-theme"],
+        "type": "select",
+        "name": "App theme",
+        "description": "Theme of this application",
+    }
     return config
 
 piper_model = None
