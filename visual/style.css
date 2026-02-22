@@ -118,6 +118,10 @@ input:focus {
   #extensions-container { flex-direction: column; }
 }
 
+@media (min-width: 600px) {
+  #extention_list { max-height: calc(100vh - (40px + 20px * 2 + 15px * 2 + 9px)); }
+}
+
 #extention_list {
   display: flex;
   flex-direction: column;
@@ -395,7 +399,6 @@ textarea {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-color);
-  box-shadow: 0 0 10px var(--text-color);
 }
 
 ::-webkit-scrollbar-track {
