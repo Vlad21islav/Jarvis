@@ -142,8 +142,6 @@ def text_to_speech(text: str) -> None:
         time.sleep(chunk_size / samplerate)
     sd.wait()
 
-
-
 def translate(text: str) -> str:
     translation_file = load_yaml_file(resource_path("resources/translation.yaml"))
     return translation_file[load_yaml_file(resource_path("resources/config.yaml"))["language"]][translation_file["en"].index(text)]

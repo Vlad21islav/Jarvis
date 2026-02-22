@@ -10,6 +10,10 @@ import yaml
 import os
 import threading
 import shutil
+import pystray
+from PIL import Image
+import winreg
+import time
 
 
 def main_loop():
@@ -73,6 +77,9 @@ def main_loop():
             print(functions.translate("Rebooting..."))
             main_loop()
     except OSError:
+        print(functions.translate("Rebooting..."))
+        main_loop()
+    except webview:
         print(functions.translate("Rebooting..."))
         main_loop()
     finally:
@@ -184,6 +191,47 @@ class API:
         with open(keys_path, 'w', encoding='utf-8') as file:
             yaml.dump(keys, file)
 
+def create_tray_icon(window):
+    global icon
+
+    def on_show(icon, item):
+        window.show()
+        window.restore()
+
+    def on_quit(icon, item):
+        icon.stop()
+        window.destroy()
+        os._exit(0)
+
+    image = Image.open("images/dark icon.ico")
+    menu = pystray.Menu(
+        pystray.MenuItem("Open Jarvis", on_show),
+        pystray.MenuItem("Exit", on_quit),
+    )
+
+    icon = pystray.Icon("Jarvis", image, "Jarvis", menu)
+    icon.run()
+
+def watch_theme():
+    def is_light_theme():
+        try:
+            key = winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER,
+                "Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+            )
+            value, _ = winreg.QueryValueEx(key, "AppsUseLightTheme")
+            return value == 1
+        except:
+            return True
+        
+    last = None
+    while True:
+        time.sleep(1)
+        now = is_light_theme()
+        if now != last:
+            icon.icon = Image.open("images/dark icon.ico" if now else "images/light icon.ico")
+            last = now
+
 if __name__ == "__main__":
     vosk_model = functions.load_yaml_file(functions.resource_path("resources/config.yaml"))["vosk-model"]
     rec = KaldiRecognizer(Model(functions.resource_path(f"vosk-models/{vosk_model}")), 16000)
@@ -204,8 +252,14 @@ if __name__ == "__main__":
 
     api = API()
 
-    thread = threading.Thread(target=main_loop, daemon=True).start()
+    threading.Thread(target=main_loop, daemon=True).start()
 
-    window = webview.create_window("Jarvis", functions.resource_path("visual/index.html"), js_api=api, width=590, height=700)
+    window = webview.create_window("Jarvis", functions.resource_path("visual/index.html"), js_api=api, width=0, height=0, min_size=(576, 585))
+    window.events.closing += lambda: (window.hide(), False)[1]
+
+    threading.Thread(target=create_tray_icon, args=(window,), daemon=True).start()
+
+    threading.Thread(target=watch_theme, daemon=True).start()
+
     functions.set_window(window)
     webview.start(debug=True)

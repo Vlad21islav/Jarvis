@@ -3,8 +3,8 @@ ai-data: You are the voice assistant Jarvis from the movie Iron Man. {text}, say
   in one line.
 genai-version: gemini-2.5-flash
 gigachat-version: GigaChat-2
-gpt-model: don't use gpt
-language: ru
-piper-model: ru-dmitry-medium
-vosk-model: small-ru
+gpt-model: gigachat
+language: en
+piper-model: en-jarvis-medium
+vosk-model: small-en-us
 wakeword-library: vosk

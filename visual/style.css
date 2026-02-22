@@ -1,9 +1,11 @@
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: "Segoe UI", sans-serif;
+  overflow-y: scroll;
 }
 
 .dark-mode {
@@ -45,6 +47,7 @@ header {
   border-bottom: 2px solid var(--border-color);
   justify-content: space-between;
   top: 0;
+  height: 40px;
 }
 
 header button {
@@ -164,7 +167,8 @@ input:focus {
 
 textarea {
   width: calc(100% - 12px * 2);
-  height: calc(100vh / 3);
+  height: calc(100vh - (40px + 20px * 2 + 15px * 2 + 13px * 2 + 9px));
+  min-height: 400px;
   background: var(--background-color);
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -172,6 +176,7 @@ textarea {
   border-radius: 6px;
   resize: vertical;
   outline: none;
+  flex: 1;
 }
 
 #output {
@@ -246,8 +251,8 @@ textarea {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 100vw;
-  height: 100vh;
+  width: calc(var(--arc-reactor-size) * 1.2);
+  height: calc(var(--arc-reactor-size) * 1.2);
   border-radius: 50%;
   background: radial-gradient(
     circle,
