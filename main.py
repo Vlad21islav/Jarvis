@@ -191,13 +191,27 @@ class API:
     def get_auto_theme(self) -> str:
         global theme
         return theme
+    
+    def translate(self, text: str) -> str:
+        try:
+            return functions.translate(text) 
+        except ValueError:
+            return "undefined"
 
 def create_tray_icon(window):
     global icon
+    global app_showed
+    app_showed = True
 
     def on_show(icon, item):
-        window.show()
-        window.restore()
+        global app_showed
+        if app_showed:
+            window.hide()
+            app_showed = False
+        else:
+            window.show()
+            window.restore()
+            app_showed = True
 
     def on_quit(icon, item):
         icon.stop()
@@ -206,7 +220,7 @@ def create_tray_icon(window):
 
     image = Image.open("images/dark icon.ico")
     menu = pystray.Menu(
-        pystray.MenuItem("Open Jarvis", on_show),
+        pystray.MenuItem("Open Jarvis", on_show, default=True),
         pystray.MenuItem("Exit", on_quit),
     )
 

@@ -8,6 +8,11 @@ function add_content(HTML) {
     document.getElementById("content").innerHTML += HTML;
 };
 
+async function translate(text) {
+    const result = await window.pywebview.api.translate(text);
+    return result;
+}
+
 function update_app_theme(theme=NaN) {
     if (!theme) {
         window.pywebview.api.get_config().then(result => {
@@ -30,7 +35,7 @@ function update_app_theme(theme=NaN) {
     theme == 'Dark' ? document.body.className='dark-mode' : document.body.className='light-mode';
 };
 
-window.load_extentions = function() {
+window.load_extentions = async function() {
     edit_content(`
         <div id="extensions-container">
             <div id="extention_list"></div>
@@ -45,21 +50,23 @@ window.load_extentions = function() {
         });
     };
 
-    window.add_extention = function() {
-        let new_extention = prompt("Введите имя нового расширения:");
+    window.add_extention = async function() {
+        let new_extention = prompt(await translate("Enter the name of the new extension:"));
         if (new_extention) {
             window.pywebview.api.add_extention(new_extention);
         }
         update_extentions();
     }
 
-    window.delete_extention = function(name) {
-        window.pywebview.api.delete_extention(name);
+    window.delete_extention = async function(name) {
+        if (confirm(await translate("Are you sure you want to delete") + ` ${name}?`)) {
+            window.pywebview.api.delete_extention(name);
+        }
         update_extentions();
     };
 
-    function update_extentions() {
-        window.pywebview.api.get_extentions().then(result => {
+    async function update_extentions() {
+        window.pywebview.api.get_extentions().then(async result => {
             extention_list = document.getElementById("extention_list");
             extention_list.innerHTML = "";
 
@@ -73,7 +80,7 @@ window.load_extentions = function() {
             });
 
             extention_list.innerHTML += `
-                <div class="ext-add" onclick="add_extention()">+ Add extension</div>
+                <div class="ext-add" onclick="add_extention()">${await translate("+ Add extension")}</div>
             `;
         });
     };
@@ -85,7 +92,7 @@ window.load_extentions = function() {
     });
 };
 
-window.load_main = function() {
+window.load_main = async function() {
     function send_command(text) {
         window.pywebview.api.send_command(text);
     };
@@ -97,7 +104,7 @@ window.load_main = function() {
     };
     edit_content(`
         <div>
-            <input align="center" id="command_input" onkeydown="handleEnter(event, value)" type="input" placeholder="Say aloud or enter the command">
+            <input align="center" id="command_input" onkeydown="handleEnter(event, value)" type="input" placeholder="${await translate('Say aloud or enter the command')}">
         </div>
         <div id="output">${output_text}</div>
         <div class="reactor-container arc-cyan">
@@ -210,9 +217,20 @@ window.load_api_keys = function() {
             `);
         });
     });
-}
+};
+
+async function update_buttons() {
+    document.getElementById("header").innerHTML = `
+        <button onclick="load_main()">${await translate("Main")}</button>
+        <button onclick="load_settings()">${await translate("Settings")}</button>
+        <button onclick="load_extentions()">${await translate("Extensions")}</button>
+        <button onclick="load_language_settings()">${await translate("Language settings")}</button>
+        <button onclick="load_api_keys()">${await translate("API keys")}</button>
+    `;
+};
 
 window.addEventListener('pywebviewready', () => {
     update_app_theme();
     load_main();
+    update_buttons();
 });

@@ -1,16 +1,42 @@
 en:
+# Main phrases
 - Good morning, sir!
 - Yes sir!
+# Console words
 - Stopping...
 - Rebooting...
 - AI server error. Rebooting...
 - AI client error. Rebooting...
+# Wake word
 - jarvis
+# App texts
+- Say aloud or enter the command
+- + Add extension
+- "Enter the name of the new extension:"
+- Are you sure you want to delete
+- Main
+- Settings
+- Extensions
+- Language settings
+- API keys
 ru:
+# Основные фразы
 - Доброе утро, сэр!
 - Да, сэр!
+# Слова для консоли
 - Остановка...
 - Перезагрузка...
 - Ошибка сервера AI. Перезагрузка...
 - Ошибка клиента AI. Перезагрузка...
+# слово-тригер
 - джарвис
+# Интерфейс
+- Произнесите всух или введите команду
+- + Добавить расширение
+- "Введите название нового расширения:"
+- Вы уверены, что хотите удалить
+- Главная
+- Настройки
+- Расширения
+- Настройки языка
+- API ключи
