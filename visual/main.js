@@ -102,29 +102,59 @@ window.load_main = async function() {
             document.getElementById("command_input").value = "";
         };
     };
+    window.open_history = function() {
+        document.getElementById("history").style.display = "block";
+        document.getElementById("history-button").style.display = "none";
+        document.getElementById("history-container").style.display = "flex";
+        document.getElementById("output").style.left = "25%";
+        update_history();
+    }
+    window.hide_history = function() {
+        document.getElementById("history").style.display = "none";
+        document.getElementById("history-button").style.display = "block";
+        document.getElementById("history-container").style.display = "block";
+        document.getElementById("output").style.left = "50%";
+    }
+    window.clear_history = function() {
+        window.pywebview.api.submit("resources/history.yaml", "");
+        update_history();
+    }
     edit_content(`
-        <div>
-            <input align="center" id="command_input" onkeydown="handleEnter(event, value)" type="input" placeholder="${await translate('Say aloud or enter the command')}">
-        </div>
-        <div id="output">${output_text}</div>
-        <div class="reactor-container arc-cyan">
-            <div class="reactor-container-inner circle abs-center"></div>
-            <div class="tunnel circle abs-center"></div>
-            <div class="core-wrapper circle abs-center"></div>
-            <div class="core-outer circle abs-center"></div>
-            <div class="core-inner circle abs-center"></div>
-            <div class="coil-container">
-                <div class="coil coil-1"></div>
-                <div class="coil coil-2"></div>
-                <div class="coil coil-3"></div>
-                <div class="coil coil-4"></div>
-                <div class="coil coil-5"></div>
-                <div class="coil coil-6"></div>
-                <div class="coil coil-7"></div>
-                <div class="coil coil-8"></div>
+        <div id="history-container">
+            <div>
+                <div id="input-div">
+                    <input align="center" id="command_input" onkeydown="handleEnter(event, value)" type="input" placeholder="${await translate('Say aloud or enter the command')}">
+                    <button id="history-button" onclick="open_history()">${await translate('History')}</button>
+                </div>
+                <div id="output">${output_text}</div>
+                <div class="reactor-container arc-cyan">
+                    <div class="reactor-container-inner circle abs-center"></div>
+                    <div class="tunnel circle abs-center"></div>
+                    <div class="core-wrapper circle abs-center"></div>
+                    <div class="core-outer circle abs-center"></div>
+                    <div class="core-inner circle abs-center"></div>
+                    <div class="coil-container">
+                        <div class="coil coil-1"></div>
+                        <div class="coil coil-2"></div>
+                        <div class="coil coil-3"></div>
+                        <div class="coil coil-4"></div>
+                        <div class="coil coil-5"></div>
+                        <div class="coil coil-6"></div>
+                        <div class="coil coil-7"></div>
+                        <div class="coil coil-8"></div>
+                    </div>
+                    <div class="outer-ring-container">
+                        <div class="outer-ring"></div>
+                    </div>
+                </div>
             </div>
-            <div class="outer-ring-container">
-                <div class="outer-ring"></div>
+            <div id="history">
+                <div id="history-buttons">
+                    <button onclick="clear_history()" id="clear-history">${await translate('Clear history')}</button>
+                    <button onclick="hide_history()" id="hide-history">✕</button>
+                </div>
+                <hr>
+                <div id="history-content"></div>
             </div>
         </div>
     `);
@@ -134,6 +164,21 @@ window.load_main = async function() {
         if (output) {
             output.innerHTML = text;
         }
+    }
+    window.update_history = function() {
+        content = document.getElementById("history-content");
+        content.innerHTML = "";
+        window.pywebview.api.get_yaml_file_content("resources/history.yaml").then(result => {
+            result.forEach(opt => {
+                content.innerHTML += `
+                    <div class="setting-block">
+                        <p class="setting-name">${opt["text"]}</p>
+                        <p class="setting-description">${opt["role"]}</p>
+                    </div>
+                `
+            });
+            content.scrollTop = content.scrollHeight;
+        });
     }
 };
 
@@ -146,8 +191,9 @@ window.load_settings = function() {
                 <p class="setting-name">${config["name"]}</p>
         `;
         if (config["type"] === "select") {
-            window.change_config = function(key, value) {
+            window.change_config = async function(key, value) {
                 if (key === "app-theme") { update_app_theme(value); }
+                else if (key === "language") { await update_buttons(); }
                 window.pywebview.api.change_config(key, value);
             };
 
@@ -220,13 +266,15 @@ window.load_api_keys = function() {
 };
 
 async function update_buttons() {
-    document.getElementById("header").innerHTML = `
-        <button onclick="load_main()">${await translate("Main")}</button>
-        <button onclick="load_settings()">${await translate("Settings")}</button>
-        <button onclick="load_extentions()">${await translate("Extensions")}</button>
-        <button onclick="load_language_settings()">${await translate("Language settings")}</button>
-        <button onclick="load_api_keys()">${await translate("API keys")}</button>
-    `;
+    setTimeout(async () => {
+        document.getElementById("header").innerHTML = `
+            <button onclick="load_main()">${await translate("Main")}</button>
+            <button onclick="load_settings()">${await translate("Settings")}</button>
+            <button onclick="load_extentions()">${await translate("Extensions")}</button>
+            <button onclick="load_language_settings()">${await translate("Language settings")}</button>
+            <button onclick="load_api_keys()">${await translate("API keys")}</button>
+        `;
+    }, 50);
 };
 
 window.addEventListener('pywebviewready', () => {

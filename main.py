@@ -117,7 +117,6 @@ def vosk_listen(input_text: str = None):
             counter += 1
             text = rec.Result()[14:-3]
             if text: # Если распознана речь, обрабатываем команду, выполняем её и сбрасываем счётчик
-                print(text)
                 counter = 0
                 if not functions.command(text):
                     counter = 6
@@ -168,7 +167,6 @@ class API:
             yaml.dump(config, file)
 
     def send_command(self, text: str) -> None:
-        print(text)
         functions.command(text)
 
     def get_keys(self) -> dict:
@@ -197,6 +195,11 @@ class API:
             return functions.translate(text) 
         except ValueError:
             return "undefined"
+        
+    def get_yaml_file_content(self, path: str) -> str:
+        config_path = functions.resource_path(path)
+        config = functions.load_yaml_file(config_path)
+        return config
 
 def create_tray_icon(window):
     global icon

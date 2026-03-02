@@ -100,6 +100,78 @@ input {
   width: calc(100% - 8px * 2);
 }
 
+#input-div {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#clear-history,
+#history-button {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  padding: 12px 15px;
+  border-radius: 6px;
+  color: var(--text-color);
+}
+
+#clear-history {
+  margin: 5px;
+}
+
+#history-container {
+  display: block;
+  flex-direction: row;
+  gap: 20px;
+}
+
+hr {
+  margin: 0;
+}
+
+#history {
+  flex: 1;
+  background: var(--background-color);
+  border: 1px solid var(--text-color);
+  padding: 0;
+  border-radius: 6px;
+  color: var(--text-color);
+  box-shadow: 0 0 10px var(--text-color);
+  width: 100%;
+  height: calc(100vh - (10px + 20px * 2 + 15px * 2 + 13px * 2 + 9px));
+  display: none;
+  overflow-y: auto;
+}
+
+#history-content {
+  max-height: calc(100% - 65px);
+  overflow-y: auto;
+  padding: 5px;
+}
+
+#history-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#hide-history {
+  background: transparent;
+  border: none;
+  color: var(--close-color);
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 20px;
+  transition: 0.2s;
+}
+
+#hide-history:hover {
+  color: var(--close-color);
+  text-shadow: 0 0 8px var(--close-color);
+}
+
+#clear-history:hover,
+#input-div button:hover,
 textarea:focus,
 .ext-add:hover,
 .ext-btn:hover,

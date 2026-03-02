@@ -27,7 +27,24 @@ def load_yaml_file(file_path: str) -> dict:
             data = yaml.safe_load(file)
         return data
     except FileNotFoundError:
+        with open(file_path, "w", encoding="utf-8") as file:
+            pass
         return {}
+    
+def add_to_history(role: str, text: str) -> None:
+    """Добавляет текст к истории"""
+    history = load_yaml_file(resource_path("resources/history.yaml"))
+    if history == {} or history == None:
+        history = []
+    history.append({
+        "role": role,
+        "text": text,
+    })
+    with open("resources/history.yaml", "w", encoding="utf-8") as file:
+        yaml.dump(history, file)
+    if window:
+        window.evaluate_js(f'update_history()')
+
 
 def playRandomSound(list: list[str]) -> None:
     """Проигрывает случайный звук из списка."""
@@ -80,6 +97,7 @@ def use_gigachat(text: str) -> str:
 
 def command(text: str) -> bool:
     """Обрабатывает команду пользователя: если такая команда есть в расширениях, выполняет её, если команда - отмена, возвращает False, иначе генерирует ответ с помощью gemai."""
+    add_to_history("You", text)
     command_was_executed = False
     extentions = os.listdir(resource_path("extentions")) # Получаем список расширений
     for folder in extentions:
@@ -114,7 +132,7 @@ def text_to_speech(text: str) -> None:
     """Преобразует текст в речь и воспроизводит её."""
     if window:
         window.evaluate_js(f'update_output_text("{text}")')
-    print(text)
+    add_to_history("Jarvis", text)
     global piper_model
     new_piper_model = load_yaml_file(resource_path("resources/config.yaml"))["piper-model"]
     if piper_model != new_piper_model:

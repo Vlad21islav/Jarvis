@@ -19,6 +19,8 @@ en:
 - Extensions
 - Language settings
 - API keys
+- History
+- Clear history
 ru:
 # Основные фразы
 - Доброе утро, сэр!
@@ -40,3 +42,5 @@ ru:
 - Расширения
 - Настройки языка
 - API ключи
+- История
+- Отчистить историю
