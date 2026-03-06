@@ -106,7 +106,7 @@ window.load_main = async function() {
         document.getElementById("history").style.display = "block";
         document.getElementById("history-button").style.display = "none";
         document.getElementById("history-container").style.display = "flex";
-        document.getElementById("output").style.left = "25%";
+        document.getElementById("output").style.left = "calc(20px + 300px / 2)";
         update_history();
     }
     window.hide_history = function() {
@@ -126,7 +126,7 @@ window.load_main = async function() {
                     <input align="center" id="command_input" onkeydown="handleEnter(event, value)" type="input" placeholder="${await translate('Say aloud or enter the command')}">
                     <button id="history-button" onclick="open_history()">${await translate('History')}</button>
                 </div>
-                <div id="output">${output_text}</div>
+                <div id="output"><p>${output_text}</p></div>
                 <div class="reactor-container arc-cyan">
                     <div class="reactor-container-inner circle abs-center"></div>
                     <div class="tunnel circle abs-center"></div>
