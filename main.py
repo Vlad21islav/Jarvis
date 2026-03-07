@@ -276,7 +276,13 @@ if __name__ == "__main__":
     threading.Thread(target=main_loop, daemon=True).start()
 
     window = webview.create_window("Jarvis", functions.resource_path("visual/index.html"), js_api=api, width=0, height=0, min_size=(576, 585))
-    window.events.closing += lambda: (window.hide(), False)[1]
+    def on_close():
+        """Hides window insted of closing it"""
+        global app_showed
+        app_showed = False
+        window.hide()
+        return False
+    window.events.closing += on_close
 
     threading.Thread(target=create_tray_icon, args=(window,), daemon=True).start()
 
@@ -284,4 +290,4 @@ if __name__ == "__main__":
     threading.Thread(target=watch_theme, daemon=True).start()
 
     functions.set_window(window)
-    webview.start(debug=False)
+    webview.start(debug=True)
