@@ -221,7 +221,7 @@ def create_tray_icon(window):
         window.destroy()
         os._exit(0)
 
-    image = Image.open("images/dark icon.ico")
+    image = Image.open(functions.resource_path("images/dark icon.ico"))
     menu = pystray.Menu(
         pystray.MenuItem("Open Jarvis", on_show, default=True),
         pystray.MenuItem("Exit", on_quit),
@@ -250,7 +250,7 @@ def watch_theme():
         theme = is_light_theme()
         if theme != last:
             if api.get_config()["app-theme"]["selected"] == "Auto": window.evaluate_js(f'update_app_theme("{"Light" if theme else "Dark"}")')
-            icon.icon = Image.open("images/dark icon.ico" if theme else "images/light icon.ico")
+            icon.icon = Image.open(functions.resource_path("images/dark icon.ico" if theme else "images/light icon.ico"))
             last = theme
 
 if __name__ == "__main__":
@@ -284,4 +284,4 @@ if __name__ == "__main__":
     threading.Thread(target=watch_theme, daemon=True).start()
 
     functions.set_window(window)
-    webview.start(debug=True)
+    webview.start(debug=False)

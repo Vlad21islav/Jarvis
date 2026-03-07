@@ -77,8 +77,8 @@ To use Jarvis you have to install the repository, python and models or you can d
 
 <h3>Jarvis versions:</h3>
 <ul>
-    <li><a href="https://github.com/Vlad21islav/Jarvis/releases/tag/English-small/">small-english-beta-jarvis-version</a></li>
     <li><a href="https://github.com/Vlad21islav/Jarvis/releases/tag/English-Russian-small/">small-english-russian-first-jarvis-version</a></li>
+    <li><a href="https://github.com/Vlad21islav/Jarvis/releases/tag/English-small/">small-english-beta-jarvis-version</a></li>
 </ul>
 
 <h3>Taken things:</h3>

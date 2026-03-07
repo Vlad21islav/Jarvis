@@ -40,7 +40,7 @@ def add_to_history(role: str, text: str) -> None:
         "role": role,
         "text": text,
     })
-    with open("resources/history.yaml", "w", encoding="utf-8") as file:
+    with open(resource_path("resources/history.yaml"), "w", encoding="utf-8") as file:
         yaml.dump(history, file)
     if window:
         window.evaluate_js(f'update_history()')
