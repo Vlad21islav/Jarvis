@@ -125,6 +125,7 @@ def command(text: str) -> bool:
     return True
 
 def set_window(w: object) -> None:
+    """Глобализирует переменную window для последующего обращения"""
     global window
     window = w
 
@@ -161,10 +162,12 @@ def text_to_speech(text: str) -> None:
     sd.wait()
 
 def translate(text: str) -> str:
+    """Переводит словосочитания в соответствии со словарём"""
     translation_file = load_yaml_file(resource_path("resources/translation.yaml"))
     return translation_file[load_yaml_file(resource_path("resources/config.yaml"))["language"]][translation_file["en"].index(text)]
 
 def edit_config(config: dict) -> dict:
+    """Изменяет конфиг для работы с JS"""
     config["vosk-model"] = {
         "options": os.listdir(resource_path("vosk-models")), 
         "selected": config["vosk-model"],

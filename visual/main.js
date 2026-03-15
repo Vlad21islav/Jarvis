@@ -119,6 +119,13 @@ window.load_main = async function() {
         window.pywebview.api.submit("resources/history.yaml", "");
         update_history();
     }
+
+    let coils = "";
+    var num_coils = 8;
+    for (let coil = 0; coil <= num_coils - 1; coil++) {
+        coils += `<div class="coil" style="rotate: ${360 / num_coils * coil}deg"></div>`;
+    }
+
     edit_content(`
         <div id="history-container">
             <div>
@@ -134,14 +141,7 @@ window.load_main = async function() {
                     <div class="core-outer circle abs-center"></div>
                     <div class="core-inner circle abs-center"></div>
                     <div class="coil-container">
-                        <div class="coil coil-1"></div>
-                        <div class="coil coil-2"></div>
-                        <div class="coil coil-3"></div>
-                        <div class="coil coil-4"></div>
-                        <div class="coil coil-5"></div>
-                        <div class="coil coil-6"></div>
-                        <div class="coil coil-7"></div>
-                        <div class="coil coil-8"></div>
+                        ${coils}
                     </div>
                     <div class="outer-ring-container">
                         <div class="outer-ring"></div>

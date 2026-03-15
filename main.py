@@ -129,20 +129,24 @@ def vosk_listen(input_text: str = None):
 
 class API:
     def submit(self, file_path: str, text: str) -> None:
+        """Изменение данных файла"""
         with open(functions.resource_path(file_path), 'w', encoding='utf-8') as file:
             file.write(text)
     
     def get_file_content(self, file_path: str) -> str:
+        """Чтение данных файла"""
         with open(functions.resource_path(file_path), 'r', encoding='utf-8') as file:
             content = file.read()
         return content
 
     def get_extentions(self) -> list[str]:
+        """Возвращает список расширений"""
         path = functions.resource_path('extentions')
         items = os.listdir(path)
         return items
     
     def add_extention(self, name: str) -> None:
+        """Добавление нового расширения"""
         dir_path = functions.resource_path(f'extentions/{name}')
         path = dir_path + "/command.yaml"
         os.makedirs(dir_path, exist_ok=True)
@@ -150,16 +154,19 @@ class API:
             pass
     
     def delete_extention(self, name: str) -> None:
+        """Удаление расширения"""
         path = functions.resource_path(f'extentions/{name}')
         shutil.rmtree(path)
     
     def get_config(self) -> dict:
+        """Возвращает конфиг как словарь"""
         config_path = functions.resource_path('resources/config.yaml')
         config = functions.load_yaml_file(config_path)
         config = functions.edit_config(config)
         return config
     
     def change_config(self, key: str, value: str) -> None:
+        """Изменение параметры конфига"""
         config_path = functions.resource_path('resources/config.yaml')
         config = functions.load_yaml_file(config_path)
         config[key] = value
@@ -167,9 +174,11 @@ class API:
             yaml.dump(config, file)
 
     def send_command(self, text: str) -> None:
+        """Отправка команды из JS"""
         functions.command(text)
 
     def get_keys(self) -> dict:
+        """Возвращает API ключи"""
         keys_path = functions.resource_path('resources/keys.yaml')
         keys = functions.load_yaml_file(keys_path)
         keys = {
@@ -180,6 +189,7 @@ class API:
         return keys
     
     def change_keys(self, key: str, value: str) -> None:
+        """Изменение API ключей"""
         keys_path = functions.resource_path('resources/keys.yaml')
         keys = functions.load_yaml_file(keys_path)
         keys[key] = value
@@ -187,26 +197,31 @@ class API:
             yaml.dump(keys, file)
 
     def get_auto_theme(self) -> str:
+        """Возращает текущую тему"""
         global theme
         return theme
     
     def translate(self, text: str) -> str:
+        """Перевод фразы из списка"""
         try:
             return functions.translate(text) 
         except ValueError:
             return "undefined"
         
     def get_yaml_file_content(self, path: str) -> str:
+        """Возращает контент данные yaml файла как словарь"""
         config_path = functions.resource_path(path)
         config = functions.load_yaml_file(config_path)
         return config
 
-def create_tray_icon(window):
+def create_tray_icon(window) -> None:
+    """Создание иконки в трее"""
     global icon
     global app_showed
     app_showed = True
 
-    def on_show(icon, item):
+    def on_show(icon, item) -> None:
+        """При нажатии на иконку открывает или закрывает окно в зависимости от его состояния"""
         global app_showed
         if app_showed:
             window.hide()
@@ -216,7 +231,8 @@ def create_tray_icon(window):
             window.restore()
             app_showed = True
 
-    def on_quit(icon, item):
+    def on_quit(icon, item) -> None:
+        """При выходе из прилужения завершает работу"""
         icon.stop()
         window.destroy()
         os._exit(0)
@@ -230,10 +246,12 @@ def create_tray_icon(window):
     icon = pystray.Icon("Jarvis", image, "Jarvis", menu)
     icon.run()
 
-def watch_theme():
+def watch_theme() -> None:
+    """Изменяет цвет иконки и интерфейса в зависимости от темы"""
     global theme
 
-    def is_light_theme():
+    def is_light_theme() -> bool:
+        """Проверяет текущую тему"""
         try:
             key = winreg.OpenKey(
                 winreg.HKEY_CURRENT_USER,
@@ -276,8 +294,8 @@ if __name__ == "__main__":
     threading.Thread(target=main_loop, daemon=True).start()
 
     window = webview.create_window("Jarvis", functions.resource_path("visual/index.html"), js_api=api, width=0, height=0, min_size=(576, 585))
-    def on_close():
-        """Hides window insted of closing it"""
+    def on_close() -> bool:
+        """Скрывает окно вместо его закрытия"""
         global app_showed
         app_showed = False
         window.hide()
