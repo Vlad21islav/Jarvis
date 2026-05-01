@@ -42,7 +42,10 @@ window.load_extentions = async function() {
             <textarea id="config_input"></textarea>
         </div>
     `);
-    config_input = document.getElementById("config_input");
+
+    const config_input = document.getElementById("config_input");
+    const extention_list = document.getElementById("extention_list");
+
     window.change_textarea = function(file_path) {
         window.pywebview.api.get_file_content(file_path).then(result => {
             config_input.value = result;
@@ -56,7 +59,7 @@ window.load_extentions = async function() {
             window.pywebview.api.add_extention(new_extention);
         }
         update_extentions();
-    }
+    };
 
     window.delete_extention = async function(name) {
         if (confirm(await translate("Are you sure you want to delete") + ` ${name}?`)) {
@@ -65,25 +68,59 @@ window.load_extentions = async function() {
         update_extentions();
     };
 
-    async function update_extentions() {
-        window.pywebview.api.get_extentions().then(async result => {
-            extention_list = document.getElementById("extention_list");
-            extention_list.innerHTML = "";
+    function renderTree(node, container) {
+        if (node.type === "folder") {
+            const folder = document.createElement("div");
+            folder.className = "ext-btn folder";
 
-            result.forEach(element => {
-                extention_list.innerHTML += `
-                    <div class="ext-btn">
-                        <span onclick="change_textarea('./extentions/${element}/command.yaml')">${element}</span>
-                        <button onclick="delete_extention('${element}')">✕</button>
-                    </div>
-                `;
-            });
+            const title = document.createElement("div");
+            title.className = "folder-title";
+            title.textContent = node.name;
 
-            extention_list.innerHTML += `
-                <div class="ext-add" onclick="add_extention()">${await translate("+ Add extension")}</div>
+            const childrenContainer = document.createElement("div");
+            childrenContainer.className = "folder-children";
+
+            title.onclick = () => {
+                childrenContainer.classList.toggle("open");
+            };
+
+            folder.appendChild(title);
+            folder.appendChild(childrenContainer);
+            container.appendChild(folder);
+
+            node.children.forEach(child => renderTree(child, childrenContainer));
+        }
+
+        if (node.type === "ext") {
+            const ext = document.createElement("div");
+            ext.className = "ext-btn";
+            ext.innerHTML = `
+                <span onclick="change_textarea('${node.path}')">${node.name}</span>
+                <button onclick="delete_extention('${node.name}')">✕</button>
             `;
-        });
-    };
+            container.appendChild(ext);
+        }
+    }
+
+    async function update_extentions() {
+        const result = await window.pywebview.api.get_extentions();
+        extention_list.innerHTML = "";
+
+        result.forEach(node => renderTree(node, extention_list));
+
+        const addBtn = document.createElement("div");
+        addBtn.className = "ext-add";
+        addBtn.textContent = await translate("+ Add extension");
+        addBtn.onclick = () => add_extention();
+        extention_list.appendChild(addBtn);
+
+        const openExtFolder = document.createElement("div");
+        openExtFolder.className = "ext-folder";
+        openExtFolder.textContent = await translate("Open extension folder");
+        openExtFolder.onclick = () => window.pywebview.api.open_extention_folder();
+        extention_list.appendChild(openExtFolder);
+    }
+
     update_extentions();
 
     config_input.addEventListener("input", () => {
@@ -167,18 +204,20 @@ window.load_main = async function() {
     }
     window.update_history = function() {
         content = document.getElementById("history-content");
-        content.innerHTML = "";
-        window.pywebview.api.get_yaml_file_content("resources/history.yaml").then(result => {
-            result.forEach(opt => {
-                content.innerHTML += `
-                    <div class="setting-block">
-                        <p class="setting-name">${opt["text"]}</p>
-                        <p class="setting-description">${opt["role"]}</p>
-                    </div>
-                `
+        if (content) {
+            content.innerHTML = "";
+            window.pywebview.api.get_yaml_file_content("resources/history.yaml").then(result => {
+                result.forEach(opt => {
+                    content.innerHTML += `
+                        <div class="setting-block">
+                            <p class="setting-name">${opt["text"]}</p>
+                            <p class="setting-description">${opt["role"]}</p>
+                        </div>
+                    `
+                });
+                content.scrollTop = content.scrollHeight;
             });
-            content.scrollTop = content.scrollHeight;
-        });
+        }
     }
 };
 

@@ -174,6 +174,7 @@ hr {
 #input-div button:hover,
 textarea:focus,
 .ext-add:hover,
+.ext-folder:hover,
 .ext-btn:hover,
 select:focus,
 input:focus {
@@ -236,7 +237,7 @@ input:focus {
   text-shadow: 0 0 8px var(--close-color);
 }
 
-.ext-add {
+.ext-add, .ext-folder {
   background: var(--background-color);
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -276,6 +277,28 @@ textarea {
 .setting-description {
   font-size: small;
   margin: 5px;
+}
+
+.folder {
+  align-items: start;
+  flex-direction: column;
+}
+
+.folder-title {
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px 0;
+}
+
+.folder-children {
+  display: none;
+  margin-left: 15px;
+  gap: 5px;
+  flex-direction: column;
+}
+
+.folder-children.open {
+  display: flex;
 }
 
 .reactor-container {

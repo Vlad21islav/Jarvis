@@ -67,6 +67,11 @@ To use Jarvis you have to install the repository, python and models or you can d
                 <td><code>plan {time} {action}</code></td>
             </tr>
             <tr>
+                <td>serial</td>
+                <td>Sends command to a serial port</td>
+                <td><code>serial {command}</code></td>
+            </tr>
+            <tr>
                 <td>cencel</td>
                 <td>Stops listening vosk</td>
                 <td><code>cencel</code></td>

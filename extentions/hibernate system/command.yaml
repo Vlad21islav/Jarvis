@@ -1,5 +1,5 @@
 actions:
-- plan 7200 sp/run shutdown /h
+- sp/run shutdown /h
 voice:
   en:
   - Turning off the power

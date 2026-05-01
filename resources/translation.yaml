@@ -1,3 +1,27 @@
+base:
+# Main phrases
+- Good morning, sir!
+- Yes sir!
+# Console words
+- Stopping...
+- Rebooting...
+- AI server error. Rebooting...
+- AI client error. Rebooting...
+# Wake word
+- jarvis
+# App texts
+- Say aloud or enter the command
+- + Add extension
+- "Enter the name of the new extension:"
+- Are you sure you want to delete
+- Main
+- Settings
+- Extensions
+- Language settings
+- API keys
+- History
+- Clear history
+- Open extension folder
 en:
 # Main phrases
 - Good morning, sir!
@@ -21,6 +45,7 @@ en:
 - API keys
 - History
 - Clear history
+- Open extension folder
 ru:
 # Основные фразы
 - Доброе утро, сэр!
@@ -44,3 +69,4 @@ ru:
 - API ключи
 - История
 - Отчистить историю
+- Открыть папку расширений

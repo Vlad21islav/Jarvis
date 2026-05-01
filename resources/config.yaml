@@ -5,7 +5,7 @@ app-theme: Auto
 genai-version: gemini-2.5-flash
 gigachat-version: GigaChat-2
 gpt-model: don't use gpt
-language: ru
+language: base
 piper-model: ru-dmitry-medium
 vosk-model: small-ru
 wakeword-library: vosk

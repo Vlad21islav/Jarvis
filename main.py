@@ -141,9 +141,33 @@ class API:
 
     def get_extentions(self) -> list[str]:
         """Возвращает список расширений"""
-        path = functions.resource_path('extentions')
-        items = os.listdir(path)
-        return items
+        EXT_DIR = functions.resource_path('extentions')
+        def build_node(path):
+            items = []
+
+            for name in sorted(os.listdir(path)):
+                full = os.path.join(path, name)
+
+                if os.path.isdir(full):
+                    cmd_path = os.path.join(full, "command.yaml")
+
+                    if os.path.isfile(cmd_path):
+                        items.append({
+                            "type": "ext",
+                            "name": name,
+                            "path": cmd_path.replace("\\", "/"),
+                        })
+                    else:
+                        children = build_node(full)
+                        items.append({
+                            "type": "folder",
+                            "name": name,
+                            "children": children,
+                        })
+
+            return items
+        return build_node(EXT_DIR)
+
     
     def add_extention(self, name: str) -> None:
         """Добавление нового расширения"""
@@ -213,6 +237,11 @@ class API:
         config_path = functions.resource_path(path)
         config = functions.load_yaml_file(config_path)
         return config
+
+    def open_extention_folder(self) -> None:
+        """Открывает папку с расширениями"""
+        path = functions.resource_path('extentions')
+        os.startfile(path)
 
 def create_tray_icon(window) -> None:
     """Создание иконки в трее"""

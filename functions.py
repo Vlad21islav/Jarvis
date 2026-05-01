@@ -13,6 +13,7 @@ import soundfile as sf
 import numpy as np
 import time
 import json
+import serial
 
 
 def resource_path(relative_path: str) -> str:
@@ -68,6 +69,18 @@ def run_action(action: str) -> bool:
         delay, *action = action.replace("plan ", "").split(" ")
         delay, action = int(delay), " ".join(action)
         Timer(delay, lambda: run_action(action)).start()
+    if action.startswith("serial"):
+        global ser
+        command = action.replace("serial ", "")
+        if not ser:
+            try:
+                ser = serial.Serial("COM5", 9600, timeout=1)
+            except serial.serialutil.SerialException:
+                ser = None
+                return True
+            time.sleep(2)
+        print(command)
+        ser.write(bytes(f"{command}\n", 'utf-8')) # отправляем команду
     if action == "cancel": # Если команда отмены, возвращаем False
         return False
     return True
@@ -99,22 +112,27 @@ def command(text: str) -> bool:
     """Обрабатывает команду пользователя: если такая команда есть в расширениях, выполняет её, если команда - отмена, возвращает False, иначе генерирует ответ с помощью gemai."""
     add_to_history("You", text)
     command_was_executed = False
-    extentions = os.listdir(resource_path("extentions")) # Получаем список расширений
-    for folder in extentions:
-        with open(resource_path(f"extentions/{folder}/command.yaml"), "r", encoding="utf-8") as file:
-            data = yaml.safe_load(file)
-            if any(phrase in text for phrase in data.get("phrases", [])): # Проверяем, есть ли в тексте команды фразы из расширения
-                command_was_executed = True
-                try:
-                    playRandomSound(data.get("voice", {}).get(load_yaml_file(resource_path("resources/config.yaml"))["language"], [])) # Проигрываем звук, если он есть
-                except IndexError:
-                    pass
-                for action in data.get("actions", []): # Выполняем действия из расширения
-                    if not run_action(action):
-                        return False
+    folders = os.listdir(resource_path("extentions")) # Получаем список расширений
+    for folder in folders:
+        extentions = os.listdir(resource_path(f"extentions/{folder}"))
+        for inner_folder in extentions:
+            path = resource_path(f"extentions/{folder}{'/' + inner_folder if os.path.exists(resource_path(f'extentions/{folder}/{inner_folder}/command.yaml')) else ''}/command.yaml")
+            with open(resource_path(path), "r", encoding="utf-8") as file:
+                data = yaml.safe_load(file)
+                if any(phrase in text for phrase in data.get("phrases", [])): # Проверяем, есть ли в тексте команды фразы из расширения
+                    command_was_executed = True
+                    try:
+                        playRandomSound(data.get("voice", {}).get(load_yaml_file(resource_path("resources/config.yaml"))["language"], [])) # Проигрываем звук, если он есть
+                    except IndexError:
+                        pass
+                    for action in data.get("actions", []): # Выполняем действия из расширения
+                        if not run_action(action):
+                            return False
 
     if not command_was_executed and load_yaml_file(resource_path("resources/config.yaml"))["gpt-model"].lower() != "don't use gpt": # Иначе генерируем ответ с помощью gpt
-        text = load_yaml_file(resource_path("resources/config.yaml"))["ai-data"].replace("{language}", load_yaml_file(resource_path("resources/config.yaml"))["language"]).replace("{text}", text)
+        language = load_yaml_file(resource_path("resources/config.yaml"))["language"]
+        if language == "base": language = "en"
+        text = load_yaml_file(resource_path("resources/config.yaml"))["ai-data"].replace("{language}", language).replace("{text}", text)
                 # Заменяем {text} на текст, сказанный пользователем и {language} на выбранный язык 
         gpt_model = load_yaml_file(resource_path("resources/config.yaml"))["gpt-model"]
         if gpt_model == "gemini":
@@ -164,7 +182,7 @@ def text_to_speech(text: str) -> None:
 def translate(text: str) -> str:
     """Переводит словосочитания в соответствии со словарём"""
     translation_file = load_yaml_file(resource_path("resources/translation.yaml"))
-    return translation_file[load_yaml_file(resource_path("resources/config.yaml"))["language"]][translation_file["en"].index(text)]
+    return translation_file[load_yaml_file(resource_path("resources/config.yaml"))["language"]][translation_file["base"].index(text)]
 
 def edit_config(config: dict) -> dict:
     """Изменяет конфиг для работы с JS"""
@@ -236,3 +254,7 @@ piper_model = None
 piper_voice = None
 window = None
 output_text = ""
+try:
+    ser = serial.Serial("COM5", 9600, timeout=1)
+except serial.serialutil.SerialException:
+    ser = None
